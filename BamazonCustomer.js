@@ -4,11 +4,11 @@ var mysql = require('mysql');
 var inquirer = require('inquirer');
 
 var connection = mysql.createConnection({
-	host: "localhost"
+	host: "localhost",
 	port: 3306,
 	user: "root",
 	password: "",
-	database: "bamazon"
+	database: "bamazon_db"
 })
 
 // ITEMS for SALE //
@@ -54,7 +54,7 @@ inquirer.prompt([
 
 // BUY OPTIONS //
 
-	}].then(function(ans){
+	]).then(function(ans){
 		var buyWhat = (ans.id)-1;
 		var buyHowMuch = parseInt(ans.qty);
 		var buyTotal = parseFloat(((res[buyWhat].Price)*buyHowMuch).toFixed(2));
@@ -66,8 +66,8 @@ inquirer.prompt([
 			{StockQuantity: (res[buyWhat].StockQuantity - buyHowMuch)},
 			{ItemID: ans.id}
 			], function(err, results){
-				if(err throw err;
-				console.log("Purchase Complete! Your purchase price is $" + grandTotal.toFixed(2));
+				if(err) throw err;
+				console.log("Purchase Complete! Your purchase price is $" + grandTotal.toFixed(2) + ". Items ship soon");
 			});
 
 		connection.query("SELECT * FROM Departments", function(err, deptRes){
@@ -86,12 +86,12 @@ inquirer.prompt([
 		{DepartmentName: res[buyWhat].DepartmentName} 
 		],	function(err, deptRes){
 			if(err) throw err;
-			console.log("Sales Update.");
+			//console.log("Sales Update");
 		});
 	});
 
 	} else{
-		console.log("All sold out, none in stock")
+		console.log("All sold out, none in stock");
 	}	
 	reprompt();
 	})
@@ -103,54 +103,15 @@ inquirer.prompt([
 function reprompt(){
 	inquirer.prompt([{
 		type: "confirm",
-		name: "reply"
-		message: "Do you have another purchase?"
+		name: "reply",
+		message: "Do you have another purchase?",
 	}]).then(function(ans){
 		if(ans.reply){
 			start();
 		} else{
-			console.log("Later, come on back soon")
+			console.log("Later, come on back soon");
 		}
 	});
 }
 
 start();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
