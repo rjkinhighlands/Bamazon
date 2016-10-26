@@ -3,6 +3,8 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 
+// DATABASE CONNECT //
+
 var connection = mysql.createConnection({
 	host: "localhost",
 	port: 3306,
@@ -11,26 +13,28 @@ var connection = mysql.createConnection({
 	database: "bamazon_db"
 })
 
+function start(){
+
 // ITEMS for SALE //
 
-function start(){
-connection.query('SELECT * FROM products', function(err, res){
+connection.query('SELECT * FROM Products', function(err, res){
 	if(err) throw err;
-	console.log('Start Shopping at Bamazon')
-	console.log('')
+	console.log('Start Shopping at Bobmazon')
+	console.log('--------------------------')
 
 	for(var i = 0; i<res.length;i++){
 	console.log("ID: "+ res[i].ItemID + " | " + "Product: " + res[i].ProductName + " | " + "Department: " + res[i].DepartmentName + " | " + "Price: " +res[i].Price + " | " + "Quantity: " + res[i].StockQuantity);
-	console.log('')
+	console.log('--------------------------')
 }
 
 // PURCHASE QUESTIONS //
 
+consol.log(' ');
 inquirer.prompt([
 	{
 		type: "input",
 		name: "id",
-		message: "",
+		message: "Item ID for purchase?",
 		validate: function(value){
 			if(isNaN(value) == false && parseInt(value) <= res.length && parseInt(value) > 0){
 				return true;
@@ -40,9 +44,9 @@ inquirer.prompt([
 		}
 	},
 	{
-	type: "input",
+		type: "input",
 		name: "quantity",
-		message: "Amount needed to buy?",
+		message: "Amount you need to purchase?",
 		validate: function(value){
 			if(isNaN(value)){
 				return false;
@@ -62,12 +66,12 @@ inquirer.prompt([
 // STOCK AVAILABLE //
 
 	if(res[buyWhat].StockQuantity >= buyHowMuch){
-		connection.query("?",[
+		connection.query("UPDATE Products SET ? WHERE ?", [
 			{StockQuantity: (res[buyWhat].StockQuantity - buyHowMuch)},
 			{ItemID: ans.id}
 			], function(err, results){
 				if(err) throw err;
-				console.log("Purchase Complete! Your purchase price is $" + grandTotal.toFixed(2) + ". Items ship soon");
+				console.log("Purchase Complete! Your purchase price is $" + buyTotal.toFixed(2) + ". Items ship soon");
 			});
 
 		connection.query("SELECT * FROM Departments", function(err, deptRes){
@@ -81,17 +85,17 @@ inquirer.prompt([
 
 // UPDATE SALES //
 
-		connection.query("UPDATE Departments ? ", [
-		{TotalSales: deptRes[index].TotalSales + grandTotal},
-		{DepartmentName: res[buyWhat].DepartmentName} 
-		],	function(err, deptRes){
-			if(err) throw err;
-			//console.log("Sales Update");
+		connection.query("UPDATE Departments SET ? WHERE ?", [
+			{TotalSales: deptRes[index].TotalSales + buyTotal},
+			{DepartmentName: res[buyWhat].DepartmentName}
+			],	function(err, deptRes){
+				if(err) throw err;
+				console.log("Sales Update");
 		});
 	});
 
 	} else{
-		console.log("All sold out, none in stock");
+		console.log("BUMMER Bobmazon all sold out, none in stock");
 	}	
 	reprompt();
 	})
@@ -109,7 +113,7 @@ function reprompt(){
 		if(ans.reply){
 			start();
 		} else{
-			console.log("Later, come on back soon");
+			console.log("Later, please come on back to Bobmazon soon");
 		}
 	});
 }
