@@ -1,10 +1,10 @@
 # Bobmazon
 
- Amazon-like storefront with Node.js &amp; MySQL
+ Amazon-like storefront with Node.js & MySQL
 
  Javascript:
 
-1. `BamazonCustomer.js`
+1. `bamazoncustomer.js`
 
  Prints the products in the store.
 
@@ -15,7 +15,6 @@
     If there is a sufficient amount of the product in stock, it will return the total for that purchase.
     If there is not enough of the product in stock, it will tell the user that there isn't enough of the product.
     If the purchase goes through, it updates the stock quantity to reflect the purchase.
-    It will also update the product sales in the department table.
 
 Technologies Used:
 
