@@ -28,6 +28,7 @@ Sublime Text
 MySQLWorkbench
 Terminal/Gitbash
 
-Robert J. Kelly       
+Robert J. Kelly
+
 https://github.com/rjkinhighlands/Bamazon
 https://github.com/rjkinhighlands/Bamazon/tree/master/Confirmations
