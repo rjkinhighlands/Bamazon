@@ -19,19 +19,19 @@ function start(){
 
 connection.query('SELECT * FROM Products', function(err, res){
 	if(err) throw err;
-	console.log('Start Shopping at Bobmazon')
-	console.log('--------------------------')
+	console.log('WELCOME to Shopping at Bobmazon')
+	console.log('--------------------------------------------------------------------------------------')
 
 	for(var i = 0; i<res.length;i++){
 	console.log("ID: "+ res[i].ItemID + " | " + "Product: " + res[i].ProductName + " | " + "Department: " + res[i].DepartmentName + " | " + "Price: " +res[i].Price + " | " + "Quantity: " + res[i].StockQuantity);
-	console.log('--------------------------')
+	console.log('--------------------------------------------------------------------------------------')
 }
 
 // PURCHASE QUESTIONS //
 
-consol.log(' ');
+console.log(' ');
 inquirer.prompt([
-	{
+	  {
 		type: "input",
 		name: "id",
 		message: "Item ID for purchase?",
@@ -41,11 +41,11 @@ inquirer.prompt([
 			} else{
 				return false;
 			}
-		}
-	},
-	{
+		  }
+	    },
+	  {
 		type: "input",
-		name: "quantity",
+		name: "qty",
 		message: "Amount you need to purchase?",
 		validate: function(value){
 			if(isNaN(value)){
@@ -53,15 +53,15 @@ inquirer.prompt([
 			} else{
 				return true;	
 			}
-		}
-	}
+		  }
+	    }
 
 // BUY OPTIONS //
 
-	]).then(function(ans){
-		var buyWhat = (ans.id)-1;
-		var buyHowMuch = parseInt(ans.qty);
-		var buyTotal = parseFloat(((res[buyWhat].Price)*buyHowMuch).toFixed(2));
+]).then(function(ans){
+	var buyWhat = (ans.id)-1;
+	var buyHowMuch = parseInt(ans.qty);
+	var finalTotal = parseFloat(((res[buyWhat].Price)*buyHowMuch).toFixed(2));
 
 // STOCK AVAILABLE //
 
@@ -69,12 +69,12 @@ inquirer.prompt([
 		connection.query("UPDATE Products SET ? WHERE ?", [
 			{StockQuantity: (res[buyWhat].StockQuantity - buyHowMuch)},
 			{ItemID: ans.id}
-			], function(err, results){
+			], function(err, result){
 				if(err) throw err;
-				console.log("Purchase Complete! Your purchase price is $" + buyTotal.toFixed(2) + ". Items ship soon");
+				console.log("Purchase Complete! Your purchase price is $" + finalTotal.toFixed(2) + ". Items ship soon. Thanks for shopping at Bobmazon");
 			});
 
-		connection.query("SELECT * FROM Departments", function(err, deptRes){
+		connection.query("SELECT * FROM Products", function(err, deptRes){
 			if(err) throw err;
 			var index;
 			for(var i = 0; i < deptRes.length; i++){
@@ -82,20 +82,9 @@ inquirer.prompt([
 					index = i;
 				}
 			}
-
-// UPDATE SALES //
-
-		connection.query("UPDATE Departments SET ? WHERE ?", [
-			{TotalSales: deptRes[index].TotalSales + buyTotal},
-			{DepartmentName: res[buyWhat].DepartmentName}
-			],	function(err, deptRes){
-				if(err) throw err;
-				console.log("Sales Update");
-		});
-	});
-
+});
 	} else{
-		console.log("BUMMER Bobmazon all sold out, none in stock");
+	  console.log("BUMMER Bobmazon all sold out, none in stock");
 	}	
 	reprompt();
 	})
